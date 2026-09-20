@@ -72,6 +72,10 @@ export function Planet({ data }: PlanetProps) {
             e.stopPropagation();
             selectBody(data.id);
           }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            selectBody(data.id);
+          }}
           onPointerOver={(e) => {
             e.stopPropagation();
             setHoveredBody(data.id);
