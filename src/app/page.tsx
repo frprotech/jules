@@ -8,6 +8,8 @@ import { PlanetPanel } from '@/components/ui/PlanetPanel';
 import { SearchModal } from '@/components/ui/SearchModal';
 import { TimelineView } from '@/components/ui/TimelineView';
 import { MissionPanel } from '@/components/ui/MissionPanel';
+import { PlanetSelectorRibbon } from '@/components/ui/PlanetSelectorRibbon';
+import { KeyboardShortcuts } from '@/components/ui/KeyboardShortcuts';
 
 export default function Home() {
   return (
@@ -17,11 +19,13 @@ export default function Home() {
 
       {/* Futuristic HUD UI Overlays */}
       <TopNav />
+      <PlanetSelectorRibbon />
       <ControlBar />
       <PlanetPanel />
       <SearchModal />
       <TimelineView />
       <MissionPanel />
+      <KeyboardShortcuts />
 
       {/* Metaverse Entry & Preloader */}
       <LoadingScreen />

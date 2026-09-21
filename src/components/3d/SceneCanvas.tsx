@@ -22,7 +22,7 @@ export function SceneCanvas() {
     <div className="w-full h-full absolute inset-0 bg-black overflow-hidden select-none">
       <Canvas
         camera={{ position: [0, 60, 110], fov: 45, near: 0.1, far: 2000 }}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
         dpr={[1, qualityPreset === 'ultra' ? 2 : 1.5]}
       >
         <color attach="background" args={['#02040a']} />
