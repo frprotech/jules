@@ -22,6 +22,7 @@ export function Planet({ data }: PlanetProps) {
   const cloudMeshRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -71,6 +72,10 @@ export function Planet({ data }: PlanetProps) {
           onClick={(e) => {
             e.stopPropagation();
             selectBody(data.id);
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            triggerCameraFocus(data.id);
           }}
           onPointerOver={(e) => {
             e.stopPropagation();
