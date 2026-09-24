@@ -10,14 +10,14 @@ import { PLANETS_DATA, SUN_DATA } from '@/data/planets';
 
 export function CameraController() {
   const { camera, scene } = useThree();
-  const controlsRef = useRef<OrbitControlsImpl>(null);
+  const controls = useThree((state) => state.controls) as OrbitControlsImpl | null;
   const targetVector = useRef(new THREE.Vector3(0, 0, 0));
 
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const cameraFocusSignal = useSolarStore((s) => s.cameraFocusSignal);
 
   useEffect(() => {
-    if (!controlsRef.current) return;
+    if (!controls) return;
 
     if (!selectedBodyId) {
       // Transition back to overview
@@ -28,13 +28,13 @@ export function CameraController() {
         duration: 2.0,
         ease: 'power3.inOut'
       });
-      gsap.to(controlsRef.current.target, {
+      gsap.to(controls.target, {
         x: 0,
         y: 0,
         z: 0,
         duration: 2.0,
         ease: 'power3.inOut',
-        onUpdate: () => controlsRef.current?.update()
+        onUpdate: () => controls.update()
       });
       return;
     }
@@ -51,9 +51,15 @@ export function CameraController() {
     }
 
     const offsetDistance = bodyData.radius * 4 + 4;
+    // For Saturn, angle camera elevated and to the side to reveal rings
+    const isSaturn = selectedBodyId === 'saturn';
+    const offsetX = isSaturn ? offsetDistance * 0.9 : offsetDistance * 0.7;
+    const offsetY = isSaturn ? offsetDistance * 0.8 : offsetDistance * 0.5;
+    const offsetZ = isSaturn ? offsetDistance * 0.9 : offsetDistance;
+
     const newCamPos = new THREE.Vector3()
       .copy(targetVector.current)
-      .add(new THREE.Vector3(offsetDistance * 0.7, offsetDistance * 0.5, offsetDistance));
+      .add(new THREE.Vector3(offsetX, offsetY, offsetZ));
 
     gsap.to(camera.position, {
       x: newCamPos.x,
@@ -63,34 +69,31 @@ export function CameraController() {
       ease: 'power2.out'
     });
 
-    gsap.to(controlsRef.current.target, {
+    gsap.to(controls.target, {
       x: targetVector.current.x,
       y: targetVector.current.y,
       z: targetVector.current.z,
       duration: 1.8,
       ease: 'power2.out',
-      onUpdate: () => controlsRef.current?.update()
+      onUpdate: () => controls.update()
     });
-  }, [selectedBodyId, cameraFocusSignal, camera, scene]);
+  }, [selectedBodyId, cameraFocusSignal, camera, scene, controls]);
 
   // Continuously track moving planet in real-time when selected
   useFrame(() => {
-    if (selectedBodyId && controlsRef.current) {
+    if (selectedBodyId && controls) {
       const targetObj = scene.getObjectByName(selectedBodyId);
       if (targetObj) {
         const currentWorldPos = new THREE.Vector3();
         targetObj.getWorldPosition(currentWorldPos);
 
-        const deltaPos = new THREE.Vector3().subVectors(currentWorldPos, controlsRef.current.target);
+        const deltaPos = new THREE.Vector3().subVectors(currentWorldPos, controls.target);
         camera.position.add(deltaPos);
-        controlsRef.current.target.copy(currentWorldPos);
-        controlsRef.current.update();
+        controls.target.copy(currentWorldPos);
+        controls.update();
       }
     }
   });
 
-  return (
-    // OrbitControls imported dynamically via R3F OrbitControls or standard three-stdlib
-    null
-  );
+  return null;
 }

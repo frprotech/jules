@@ -10,6 +10,7 @@ import { EarthNightShader } from '@/shaders/earthNightShader';
 import { SaturnRings } from './SaturnRings';
 import { Moon } from './Moon';
 import { useSolarStore } from '@/store/useSolarStore';
+import { spaceAudio } from '@/utils/audio';
 import { Html } from '@react-three/drei';
 
 interface PlanetProps {
@@ -20,8 +21,10 @@ export function Planet({ data }: PlanetProps) {
   const orbitGroupRef = useRef<THREE.Group>(null);
   const planetMeshRef = useRef<THREE.Mesh>(null);
   const cloudMeshRef = useRef<THREE.Mesh>(null);
+  const holoRingRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -59,7 +62,23 @@ export function Planet({ data }: PlanetProps) {
         cloudMeshRef.current.rotation.y += delta * (data.rotationSpeed * 1.3);
       }
     }
+    // Rotate holographic selection ring
+    if (holoRingRef.current) {
+      holoRingRef.current.rotation.z += delta * 0.5;
+    }
   });
+
+  const handleSelect = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    selectBody(data.id);
+    spaceAudio.playSelectSound();
+  };
+
+  const handleDoubleClick = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    triggerCameraFocus(data.id);
+    spaceAudio.playSelectSound();
+  };
 
   return (
     <group ref={orbitGroupRef}>
@@ -68,10 +87,8 @@ export function Planet({ data }: PlanetProps) {
         <mesh
           ref={planetMeshRef}
           name={data.id}
-          onClick={(e) => {
-            e.stopPropagation();
-            selectBody(data.id);
-          }}
+          onClick={handleSelect}
+          onDoubleClick={handleDoubleClick}
           onPointerOver={(e) => {
             e.stopPropagation();
             setHoveredBody(data.id);
@@ -113,6 +130,20 @@ export function Planet({ data }: PlanetProps) {
           </mesh>
         )}
 
+        {/* Earth Holographic Selection Ring */}
+        {data.id === 'earth' && isSelected && (
+          <mesh ref={holoRingRef} rotation={[Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[data.radius * 1.35, data.radius * 1.45, 64]} />
+            <meshBasicMaterial
+              color="#00e5ff"
+              transparent
+              opacity={0.7}
+              side={THREE.DoubleSide}
+              blending={THREE.AdditiveBlending}
+            />
+          </mesh>
+        )}
+
         {/* Atmospheric Scattering Outer Rim */}
         {data.atmosphereColor && (
           <mesh scale={1.15}>
@@ -140,10 +171,7 @@ export function Planet({ data }: PlanetProps) {
         {(showLabels || isHovered || isSelected) && (
           <Html position={[0, data.radius + 1.2, 0]} center distanceFactor={25}>
             <div
-              onClick={(e) => {
-                e.stopPropagation();
-                selectBody(data.id);
-              }}
+              onClick={handleSelect}
               className={`px-2.5 py-1 rounded-md backdrop-blur-md text-xs tracking-wider font-mono whitespace-nowrap cursor-pointer transition-all duration-200 ${
                 isSelected
                   ? 'bg-cyan-950/90 border border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/30 font-bold scale-110'

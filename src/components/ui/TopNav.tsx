@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useSolarStore } from '@/store/useSolarStore';
 import { NavTab, QualityPreset } from '@/types/solar';
 import { spaceAudio } from '@/utils/audio';
-import { Search, Volume2, VolumeX, Maximize2, Sliders } from 'lucide-react';
+import { Search, Volume2, VolumeX, Maximize2, Sliders, Menu, X } from 'lucide-react';
 
 export function TopNav() {
   const activeTab = useSolarStore((s) => s.activeTab);
@@ -15,6 +16,8 @@ export function TopNav() {
   const setQualityPreset = useSolarStore((s) => s.setQualityPreset);
   const selectBody = useSolarStore((s) => s.selectBody);
   const isImmersiveMode = useSolarStore((s) => s.isImmersiveMode);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (isImmersiveMode) return null;
 
@@ -35,7 +38,7 @@ export function TopNav() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 p-4 flex items-center justify-between pointer-events-none select-none">
+    <header className="fixed top-0 left-0 right-0 z-40 p-3 md:p-4 flex items-center justify-between pointer-events-none select-none">
       {/* Brand Logo */}
       <div
         onClick={() => {
@@ -43,15 +46,15 @@ export function TopNav() {
           setActiveTab('solar_system');
           spaceAudio.playClickSound();
         }}
-        className="pointer-events-auto flex items-center space-x-2.5 px-3.5 py-2 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg"
+        className="pointer-events-auto flex items-center space-x-2.5 px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg"
       >
         <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-        <span className="font-mono text-sm font-bold tracking-wider text-white">
+        <span className="font-mono text-xs md:text-sm font-bold tracking-wider text-white">
           COSMOS <span className="text-cyan-400 font-extrabold">3D</span>
         </span>
       </div>
 
-      {/* Center Nav Links */}
+      {/* Center Nav Links (Desktop) */}
       <nav className="pointer-events-auto hidden md:flex items-center space-x-1 p-1.5 rounded-2xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md shadow-lg">
         {navItems.map((item) => (
           <button
@@ -73,14 +76,14 @@ export function TopNav() {
       </nav>
 
       {/* Right Controls */}
-      <div className="pointer-events-auto flex items-center space-x-2">
+      <div className="pointer-events-auto flex items-center space-x-1.5 md:space-x-2">
         {/* Search button */}
         <button
           onClick={() => {
             setSearchOpen(true);
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="p-2 md:p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title="Search solar system (Cmd+K)"
         >
           <Search className="w-4 h-4" />
@@ -88,7 +91,7 @@ export function TopNav() {
 
         {/* Quality Preset Selector */}
         <div className="relative group">
-          <button className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer flex items-center space-x-1">
+          <button className="p-2 md:p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer flex items-center space-x-1">
             <Sliders className="w-4 h-4 text-cyan-400" />
             <span className="font-mono text-[10px] uppercase font-bold text-cyan-300 hidden sm:inline">
               {qualityPreset}
@@ -118,7 +121,7 @@ export function TopNav() {
             toggleAudio();
             spaceAudio.setMuted(!isAudioMuted);
           }}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="p-2 md:p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title={isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
         >
           {isAudioMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-cyan-400 animate-pulse" />}
@@ -127,12 +130,44 @@ export function TopNav() {
         {/* Fullscreen Button */}
         <button
           onClick={toggleFullscreen}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="hidden sm:block p-2 md:p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title="Toggle Fullscreen"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
+
+        {/* Mobile Nav Toggle */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white"
+        >
+          {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+        </button>
       </div>
+
+      {/* Mobile Nav Drawer */}
+      {mobileMenuOpen && (
+        <div className="pointer-events-auto absolute top-full left-3 right-3 mt-2 p-3 rounded-2xl bg-slate-950/95 border border-slate-800 backdrop-blur-xl shadow-2xl flex flex-col space-y-2 md:hidden">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                if (item.id === 'solar_system') selectBody(null);
+                setMobileMenuOpen(false);
+                spaceAudio.playClickSound();
+              }}
+              className={`p-2.5 rounded-xl font-mono text-xs text-left tracking-wider transition-all cursor-pointer ${
+                activeTab === item.id
+                  ? 'bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 font-bold'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
     </header>
   );
 }
