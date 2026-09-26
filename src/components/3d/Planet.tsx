@@ -10,6 +10,7 @@ import { EarthNightShader } from '@/shaders/earthNightShader';
 import { SaturnRings } from './SaturnRings';
 import { Moon } from './Moon';
 import { useSolarStore } from '@/store/useSolarStore';
+import { spaceAudio } from '@/utils/audio';
 import { Html } from '@react-three/drei';
 
 interface PlanetProps {
@@ -22,6 +23,7 @@ export function Planet({ data }: PlanetProps) {
   const cloudMeshRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -43,6 +45,18 @@ export function Planet({ data }: PlanetProps) {
   const atmosphereUniforms = useRef({
     uColor: { value: new THREE.Color(data.atmosphereColor || '#4da6ff') }
   });
+
+  const handleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    selectBody(data.id);
+    spaceAudio.playSelectSound();
+  };
+
+  const handleDoubleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    triggerCameraFocus(data.id);
+    spaceAudio.playSelectSound();
+  };
 
   useFrame((_, delta) => {
     if (isPlaying) {
@@ -68,10 +82,8 @@ export function Planet({ data }: PlanetProps) {
         <mesh
           ref={planetMeshRef}
           name={data.id}
-          onClick={(e) => {
-            e.stopPropagation();
-            selectBody(data.id);
-          }}
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
           onPointerOver={(e) => {
             e.stopPropagation();
             setHoveredBody(data.id);
@@ -140,10 +152,7 @@ export function Planet({ data }: PlanetProps) {
         {(showLabels || isHovered || isSelected) && (
           <Html position={[0, data.radius + 1.2, 0]} center distanceFactor={25}>
             <div
-              onClick={(e) => {
-                e.stopPropagation();
-                selectBody(data.id);
-              }}
+              onClick={handleClick}
               className={`px-2.5 py-1 rounded-md backdrop-blur-md text-xs tracking-wider font-mono whitespace-nowrap cursor-pointer transition-all duration-200 ${
                 isSelected
                   ? 'bg-cyan-950/90 border border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/30 font-bold scale-110'

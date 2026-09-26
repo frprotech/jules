@@ -26,15 +26,17 @@ export function ControlBar() {
   const toggleImmersiveMode = useSolarStore((s) => s.toggleImmersiveMode);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 select-none">
-      <div className="flex items-center space-x-2 p-2 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-2xl shadow-cyan-950/20">
+    <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 select-none max-w-[95vw]">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 p-1.5 sm:p-2 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-2xl shadow-cyan-950/20">
         {/* Play/Pause */}
         <button
+          type="button"
+          aria-label={isPlaying ? 'Pause Simulation' : 'Play Simulation'}
           onClick={() => {
             togglePlay();
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
           title={isPlaying ? 'Pause Simulation' : 'Play Simulation'}
         >
           {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
@@ -42,13 +44,15 @@ export function ControlBar() {
 
         {/* Speed Toggle */}
         <button
+          type="button"
+          aria-label="Adjust simulation speed"
           onClick={() => {
             const speeds = [0.2, 0.5, 1.0, 2.0, 4.0];
             const nextIdx = (speeds.indexOf(simulationSpeed) + 1) % speeds.length;
             setSimulationSpeed(speeds[nextIdx]);
             spaceAudio.playClickSound();
           }}
-          className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 font-mono text-xs flex items-center space-x-1 cursor-pointer"
+          className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 font-mono text-xs flex items-center space-x-1 cursor-pointer"
           title="Adjust Simulation Speed"
         >
           <FastForward className="w-3.5 h-3.5 text-cyan-400" />
@@ -59,11 +63,13 @@ export function ControlBar() {
 
         {/* Orbit Lines Toggle */}
         <button
+          type="button"
+          aria-label="Toggle Orbit Lines"
           onClick={() => {
             toggleOrbits();
             spaceAudio.playClickSound();
           }}
-          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
             showOrbits
               ? 'bg-cyan-950/90 border-cyan-500/50 text-cyan-300'
               : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
@@ -75,11 +81,13 @@ export function ControlBar() {
 
         {/* Labels Toggle */}
         <button
+          type="button"
+          aria-label="Toggle Celestial Labels"
           onClick={() => {
             toggleLabels();
             spaceAudio.playClickSound();
           }}
-          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
             showLabels
               ? 'bg-cyan-950/90 border-cyan-500/50 text-cyan-300'
               : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
@@ -91,11 +99,13 @@ export function ControlBar() {
 
         {/* Reset Overview Camera */}
         <button
+          type="button"
+          aria-label="Reset Camera Overview"
           onClick={() => {
             selectBody(null);
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer"
           title="Reset Camera Overview"
         >
           <RotateCcw className="w-4 h-4" />
@@ -105,11 +115,13 @@ export function ControlBar() {
 
         {/* Immersive Viewport Mode */}
         <button
+          type="button"
+          aria-label="Toggle Immersive Mode"
           onClick={() => {
             toggleImmersiveMode();
             spaceAudio.playClickSound();
           }}
-          className={`px-3 py-2 rounded-xl border font-mono text-xs flex items-center space-x-1.5 transition-all cursor-pointer ${
+          className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border font-mono text-xs flex items-center space-x-1.5 transition-all cursor-pointer ${
             isImmersiveMode
               ? 'bg-amber-950/90 border-amber-500/50 text-amber-300 font-bold'
               : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'

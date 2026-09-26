@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { SunShader, CoronaGlowShader } from '@/shaders/sunShader';
 import { SUN_DATA } from '@/data/planets';
 import { useSolarStore } from '@/store/useSolarStore';
+import { spaceAudio } from '@/utils/audio';
 import { Html } from '@react-three/drei';
 
 export function Sun() {
@@ -14,6 +15,7 @@ export function Sun() {
   const coronaRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -30,6 +32,18 @@ export function Sun() {
   const coronaUniforms = useRef({
     uColor: { value: new THREE.Color('#ffaa22') }
   });
+
+  const handleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    selectBody('sun');
+    spaceAudio.playSelectSound();
+  };
+
+  const handleDoubleClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    triggerCameraFocus('sun');
+    spaceAudio.playSelectSound();
+  };
 
   useFrame((_, delta) => {
     sunUniforms.current.uTime.value += delta;
@@ -51,10 +65,8 @@ export function Sun() {
       <mesh
         ref={meshRef}
         name="sun"
-        onClick={(e) => {
-          e.stopPropagation();
-          selectBody('sun');
-        }}
+        onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
         onPointerOver={(e) => {
           e.stopPropagation();
           setHoveredBody('sun');
@@ -64,6 +76,7 @@ export function Sun() {
           setHoveredBody(null);
           document.body.style.cursor = 'auto';
         }}
+        scale={isHovered ? 1.05 : 1.0}
       >
         <sphereGeometry args={[SUN_DATA.radius, 64, 64]} />
         <shaderMaterial
@@ -89,7 +102,10 @@ export function Sun() {
       {/* 3D Hover Tooltip */}
       {(isHovered || isSelected) && (
         <Html position={[0, SUN_DATA.radius + 2, 0]} center distanceFactor={25}>
-          <div className="px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-amber-500/50 shadow-lg shadow-amber-500/20 text-white text-xs tracking-wider uppercase font-mono whitespace-nowrap pointer-events-none">
+          <div
+            onClick={handleClick}
+            className="px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-md border border-amber-500/50 shadow-lg shadow-amber-500/20 text-white text-xs tracking-wider uppercase font-mono whitespace-nowrap cursor-pointer pointer-events-auto"
+          >
             {SUN_DATA.name} <span className="text-amber-400 font-bold ml-1">Star</span>
           </div>
         </Html>
