@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSolarStore } from '@/store/useSolarStore';
 import { NavTab, QualityPreset } from '@/types/solar';
 import { spaceAudio } from '@/utils/audio';
@@ -15,6 +16,18 @@ export function TopNav() {
   const setQualityPreset = useSolarStore((s) => s.setQualityPreset);
   const selectBody = useSolarStore((s) => s.selectBody);
   const isImmersiveMode = useSolarStore((s) => s.isImmersiveMode);
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K for Search)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setSearchOpen]);
 
   if (isImmersiveMode) return null;
 
@@ -35,27 +48,31 @@ export function TopNav() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 p-4 flex items-center justify-between pointer-events-none select-none">
+    <header className="fixed top-0 left-0 right-0 z-40 p-3 sm:p-4 flex items-center justify-between pointer-events-none select-none">
       {/* Brand Logo */}
-      <div
+      <button
+        type="button"
+        aria-label="Cosmos 3D Home"
         onClick={() => {
           selectBody(null);
           setActiveTab('solar_system');
           spaceAudio.playClickSound();
         }}
-        className="pointer-events-auto flex items-center space-x-2.5 px-3.5 py-2 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg"
+        className="pointer-events-auto flex items-center space-x-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md cursor-pointer hover:border-cyan-500/50 transition-all shadow-lg"
       >
         <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-        <span className="font-mono text-sm font-bold tracking-wider text-white">
+        <span className="font-mono text-xs sm:text-sm font-bold tracking-wider text-white">
           COSMOS <span className="text-cyan-400 font-extrabold">3D</span>
         </span>
-      </div>
+      </button>
 
       {/* Center Nav Links */}
-      <nav className="pointer-events-auto hidden md:flex items-center space-x-1 p-1.5 rounded-2xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md shadow-lg">
+      <nav aria-label="Main Navigation" className="pointer-events-auto hidden md:flex items-center space-x-1 p-1.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-lg">
         {navItems.map((item) => (
           <button
             key={item.id}
+            type="button"
+            aria-label={`Navigate to ${item.label}`}
             onClick={() => {
               setActiveTab(item.id);
               if (item.id === 'solar_system') selectBody(null);
@@ -73,14 +90,16 @@ export function TopNav() {
       </nav>
 
       {/* Right Controls */}
-      <div className="pointer-events-auto flex items-center space-x-2">
+      <div className="pointer-events-auto flex items-center space-x-1.5 sm:space-x-2">
         {/* Search button */}
         <button
+          type="button"
+          aria-label="Search solar system objects and missions"
           onClick={() => {
             setSearchOpen(true);
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title="Search solar system (Cmd+K)"
         >
           <Search className="w-4 h-4" />
@@ -88,7 +107,11 @@ export function TopNav() {
 
         {/* Quality Preset Selector */}
         <div className="relative group">
-          <button className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer flex items-center space-x-1">
+          <button
+            type="button"
+            aria-label="Quality settings"
+            className="p-2 sm:p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer flex items-center space-x-1"
+          >
             <Sliders className="w-4 h-4 text-cyan-400" />
             <span className="font-mono text-[10px] uppercase font-bold text-cyan-300 hidden sm:inline">
               {qualityPreset}
@@ -98,6 +121,8 @@ export function TopNav() {
             {(['ultra', 'high', 'medium', 'low'] as QualityPreset[]).map((preset) => (
               <button
                 key={preset}
+                type="button"
+                aria-label={`Set quality to ${preset}`}
                 onClick={() => {
                   setQualityPreset(preset);
                   spaceAudio.playClickSound();
@@ -114,11 +139,13 @@ export function TopNav() {
 
         {/* Audio Mute Toggle */}
         <button
+          type="button"
+          aria-label={isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
           onClick={() => {
             toggleAudio();
             spaceAudio.setMuted(!isAudioMuted);
           }}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title={isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
         >
           {isAudioMuted ? <VolumeX className="w-4 h-4 text-slate-500" /> : <Volume2 className="w-4 h-4 text-cyan-400 animate-pulse" />}
@@ -126,8 +153,10 @@ export function TopNav() {
 
         {/* Fullscreen Button */}
         <button
+          type="button"
+          aria-label="Toggle Fullscreen"
           onClick={toggleFullscreen}
-          className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md text-slate-300 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
           title="Toggle Fullscreen"
         >
           <Maximize2 className="w-4 h-4" />
