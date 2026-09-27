@@ -5,13 +5,18 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { TopNav } from '@/components/ui/TopNav';
 import { ControlBar } from '@/components/ui/ControlBar';
 import { PlanetPanel } from '@/components/ui/PlanetPanel';
+import { PlanetDrawer } from '@/components/ui/PlanetDrawer';
 import { SearchModal } from '@/components/ui/SearchModal';
 import { TimelineView } from '@/components/ui/TimelineView';
 import { MissionPanel } from '@/components/ui/MissionPanel';
+import { ShortcutHandler } from '@/components/ui/ShortcutHandler';
 
 export default function Home() {
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-black select-none">
+      {/* Keyboard Shortcuts Listener */}
+      <ShortcutHandler />
+
       {/* 3D WebGL Metaverse Canvas Engine */}
       <SceneCanvas />
 
@@ -19,6 +24,7 @@ export default function Home() {
       <TopNav />
       <ControlBar />
       <PlanetPanel />
+      <PlanetDrawer />
       <SearchModal />
       <TimelineView />
       <MissionPanel />
