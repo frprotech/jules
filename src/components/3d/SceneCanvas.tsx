@@ -6,6 +6,7 @@ import { Sun } from './Sun';
 import { Planet } from './Planet';
 import { OrbitRing } from './OrbitRing';
 import { StarField } from './StarField';
+import { Nebula } from './Nebula';
 import { CameraController } from './CameraController';
 import { PostProcessing } from './PostProcessing';
 import { PLANETS_DATA } from '@/data/planets';
@@ -27,9 +28,10 @@ export function SceneCanvas() {
       >
         <color attach="background" args={['#02040a']} />
 
-        {/* Ambient & Star Lighting */}
+        {/* Ambient & Space Lighting */}
         <ambientLight intensity={0.12} />
         <StarField count={particleCount} />
+        <Nebula />
 
         {/* Orbit Path Lines */}
         {showOrbits &&
