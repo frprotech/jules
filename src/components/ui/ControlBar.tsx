@@ -26,8 +26,8 @@ export function ControlBar() {
   const toggleImmersiveMode = useSolarStore((s) => s.toggleImmersiveMode);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 select-none">
-      <div className="flex items-center space-x-2 p-2 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-2xl shadow-cyan-950/20">
+    <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 select-none max-w-[95vw]">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 p-1.5 sm:p-2 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-2xl shadow-cyan-950/20 overflow-x-auto no-scrollbar">
         {/* Play/Pause */}
         <button
           onClick={() => {

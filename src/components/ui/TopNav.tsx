@@ -52,7 +52,7 @@ export function TopNav() {
       </div>
 
       {/* Center Nav Links */}
-      <nav className="pointer-events-auto hidden md:flex items-center space-x-1 p-1.5 rounded-2xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md shadow-lg">
+      <nav className="pointer-events-auto flex items-center overflow-x-auto max-w-[55vw] sm:max-w-none space-x-1 p-1 sm:p-1.5 rounded-2xl bg-slate-950/70 border border-slate-800/80 backdrop-blur-md shadow-lg no-scrollbar">
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -61,7 +61,7 @@ export function TopNav() {
               if (item.id === 'solar_system') selectBody(null);
               spaceAudio.playClickSound();
             }}
-            className={`px-3.5 py-1.5 rounded-xl font-mono text-xs tracking-wider transition-all cursor-pointer ${
+            className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl font-mono text-[11px] sm:text-xs tracking-wider transition-all shrink-0 cursor-pointer ${
               activeTab === item.id
                 ? 'bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 shadow-md font-semibold'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
