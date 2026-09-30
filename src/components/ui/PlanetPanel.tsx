@@ -22,11 +22,11 @@ export function PlanetPanel() {
   return (
     <AnimatePresence>
       <motion.aside
-        initial={{ x: 400, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: 400, opacity: 0 }}
+        initial={{ y: 300, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 300, opacity: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="fixed top-20 right-6 bottom-24 z-30 w-80 md:w-96 p-6 rounded-3xl bg-slate-950/80 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
+        className="fixed bottom-20 left-4 right-4 md:left-auto md:right-6 md:top-20 md:bottom-24 z-30 md:w-96 max-h-[60vh] md:max-h-none p-5 md:p-6 rounded-3xl bg-slate-950/85 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
       >
         {/* Close Button */}
         <button
