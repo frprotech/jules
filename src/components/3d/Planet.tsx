@@ -22,6 +22,7 @@ export function Planet({ data }: PlanetProps) {
   const cloudMeshRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -61,6 +62,11 @@ export function Planet({ data }: PlanetProps) {
     }
   });
 
+  const handleSelect = () => {
+    selectBody(data.id);
+    triggerCameraFocus(data.id);
+  };
+
   return (
     <group ref={orbitGroupRef}>
       <group position={[data.orbitRadius, 0, 0]} rotation={[0, 0, THREE.MathUtils.degToRad(data.axialTilt)]}>
@@ -70,7 +76,11 @@ export function Planet({ data }: PlanetProps) {
           name={data.id}
           onClick={(e) => {
             e.stopPropagation();
-            selectBody(data.id);
+            handleSelect();
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            handleSelect();
           }}
           onPointerOver={(e) => {
             e.stopPropagation();
@@ -81,7 +91,7 @@ export function Planet({ data }: PlanetProps) {
             setHoveredBody(null);
             document.body.style.cursor = 'auto';
           }}
-          scale={isHovered ? 1.08 : 1.0}
+          scale={isHovered ? 1.08 : isSelected ? 1.04 : 1.0}
         >
           <sphereGeometry args={[data.radius, 48, 48]} />
 
@@ -94,8 +104,8 @@ export function Planet({ data }: PlanetProps) {
           ) : (
             <meshStandardMaterial
               color={data.color}
-              roughness={data.type === 'gas_giant' ? 0.4 : 0.8}
-              metalness={0.1}
+              roughness={data.type === 'gas_giant' || data.type === 'ice_giant' ? 0.35 : 0.75}
+              metalness={0.15}
             />
           )}
         </mesh>
@@ -114,8 +124,8 @@ export function Planet({ data }: PlanetProps) {
         )}
 
         {/* Atmospheric Scattering Outer Rim */}
-        {data.atmosphereColor && (
-          <mesh scale={1.15}>
+        {(data.atmosphereColor || isSelected || isHovered) && (
+          <mesh scale={isSelected ? 1.2 : 1.15}>
             <sphereGeometry args={[data.radius, 32, 32]} />
             <shaderMaterial
               vertexShader={AtmosphereShader.vertexShader}
@@ -142,9 +152,9 @@ export function Planet({ data }: PlanetProps) {
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                selectBody(data.id);
+                handleSelect();
               }}
-              className={`px-2.5 py-1 rounded-md backdrop-blur-md text-xs tracking-wider font-mono whitespace-nowrap cursor-pointer transition-all duration-200 ${
+              className={`px-2.5 py-1 rounded-md backdrop-blur-md text-xs tracking-wider font-mono whitespace-nowrap cursor-pointer transition-all duration-200 select-none ${
                 isSelected
                   ? 'bg-cyan-950/90 border border-cyan-400 text-cyan-300 shadow-lg shadow-cyan-500/30 font-bold scale-110'
                   : isHovered
