@@ -6,6 +6,7 @@ import { Sun } from './Sun';
 import { Planet } from './Planet';
 import { OrbitRing } from './OrbitRing';
 import { StarField } from './StarField';
+import { Nebula } from './Nebula';
 import { CameraController } from './CameraController';
 import { PostProcessing } from './PostProcessing';
 import { PLANETS_DATA } from '@/data/planets';
@@ -16,12 +17,13 @@ export function SceneCanvas() {
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const qualityPreset = useSolarStore((s) => s.qualityPreset);
 
-  const particleCount = qualityPreset === 'ultra' ? 12000 : qualityPreset === 'high' ? 8000 : 4000;
+  const starCount = qualityPreset === 'ultra' ? 12000 : qualityPreset === 'high' ? 8000 : 4000;
+  const nebulaCount = qualityPreset === 'ultra' ? 3000 : qualityPreset === 'high' ? 2000 : 1000;
 
   return (
     <div className="w-full h-full absolute inset-0 bg-black overflow-hidden select-none">
       <Canvas
-        camera={{ position: [0, 60, 110], fov: 45, near: 0.1, far: 2000 }}
+        camera={{ position: [0, 65, 115], fov: 45, near: 0.1, far: 2000 }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
         dpr={[1, qualityPreset === 'ultra' ? 2 : 1.5]}
       >
@@ -29,7 +31,8 @@ export function SceneCanvas() {
 
         {/* Ambient & Star Lighting */}
         <ambientLight intensity={0.12} />
-        <StarField count={particleCount} />
+        <StarField count={starCount} />
+        <Nebula count={nebulaCount} />
 
         {/* Orbit Path Lines */}
         {showOrbits &&

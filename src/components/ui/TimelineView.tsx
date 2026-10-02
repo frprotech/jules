@@ -20,12 +20,12 @@ export function TimelineView() {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
-        className="fixed inset-x-6 bottom-24 z-30 max-w-5xl mx-auto p-6 rounded-3xl bg-slate-950/90 border border-slate-800/90 backdrop-blur-2xl shadow-2xl text-white select-none"
+        className="fixed inset-x-3 sm:inset-x-6 bottom-20 sm:bottom-24 z-30 max-w-5xl mx-auto p-4 sm:p-6 rounded-3xl bg-slate-950/90 border border-slate-800/90 backdrop-blur-2xl shadow-2xl text-white select-none"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <Clock className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-mono font-bold tracking-wider">
+            <h2 className="text-base sm:text-lg font-mono font-bold tracking-wider">
               SPACE EXPLORATION MILESTONES
             </h2>
           </div>
@@ -34,14 +34,14 @@ export function TimelineView() {
               setActiveTab('solar_system');
               spaceAudio.playClickSound();
             }}
-            className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
+            className="p-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 hover:text-white cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Horizontal Timeline Scroll */}
-        <div className="flex space-x-4 overflow-x-auto pb-3 pt-2 scrollbar-thin">
+        <div className="flex space-x-3 sm:space-x-4 overflow-x-auto pb-3 pt-2 scrollbar-thin">
           {TIMELINE_DATA.map((item) => (
             <div
               key={item.id}
@@ -49,7 +49,7 @@ export function TimelineView() {
                 if (item.targetBodyId) selectBody(item.targetBodyId);
                 spaceAudio.playSelectSound();
               }}
-              className="flex-none w-72 p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/60 hover:bg-cyan-950/40 transition-all cursor-pointer group"
+              className="flex-none w-64 sm:w-72 p-3.5 sm:p-4 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/60 hover:bg-cyan-950/40 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between text-xs font-mono text-cyan-400 mb-2">
                 <span className="flex items-center space-x-1">

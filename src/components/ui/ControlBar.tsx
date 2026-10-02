@@ -26,16 +26,16 @@ export function ControlBar() {
   const toggleImmersiveMode = useSolarStore((s) => s.toggleImmersiveMode);
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 select-none">
-      <div className="flex items-center space-x-2 p-2 rounded-2xl bg-slate-950/80 border border-slate-800/80 backdrop-blur-md shadow-2xl shadow-cyan-950/20">
+    <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 select-none max-w-[95vw]">
+      <div className="flex items-center space-x-1.5 sm:space-x-2 p-1.5 sm:p-2 rounded-2xl bg-slate-950/85 border border-slate-800/90 backdrop-blur-md shadow-2xl shadow-cyan-950/20">
         {/* Play/Pause */}
         <button
           onClick={() => {
             togglePlay();
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
-          title={isPlaying ? 'Pause Simulation' : 'Play Simulation'}
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-cyan-400 hover:text-cyan-300 transition-all cursor-pointer"
+          title={isPlaying ? 'Pause Simulation (Space)' : 'Play Simulation (Space)'}
         >
           {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
         </button>
@@ -48,14 +48,14 @@ export function ControlBar() {
             setSimulationSpeed(speeds[nextIdx]);
             spaceAudio.playClickSound();
           }}
-          className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 font-mono text-xs flex items-center space-x-1 cursor-pointer"
+          className="px-2.5 sm:px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 font-mono text-xs flex items-center space-x-1 cursor-pointer"
           title="Adjust Simulation Speed"
         >
           <FastForward className="w-3.5 h-3.5 text-cyan-400" />
           <span>{simulationSpeed}x</span>
         </button>
 
-        <div className="w-px h-5 bg-slate-800 my-auto" />
+        <div className="w-px h-5 bg-slate-800 my-auto hidden sm:block" />
 
         {/* Orbit Lines Toggle */}
         <button
@@ -63,7 +63,7 @@ export function ControlBar() {
             toggleOrbits();
             spaceAudio.playClickSound();
           }}
-          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
             showOrbits
               ? 'bg-cyan-950/90 border-cyan-500/50 text-cyan-300'
               : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
@@ -79,7 +79,7 @@ export function ControlBar() {
             toggleLabels();
             spaceAudio.playClickSound();
           }}
-          className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+          className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
             showLabels
               ? 'bg-cyan-950/90 border-cyan-500/50 text-cyan-300'
               : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
@@ -95,13 +95,13 @@ export function ControlBar() {
             selectBody(null);
             spaceAudio.playClickSound();
           }}
-          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer"
-          title="Reset Camera Overview"
+          className="p-2 sm:p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/50 text-slate-300 hover:text-white transition-all cursor-pointer"
+          title="Reset Camera Overview (R)"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
 
-        <div className="w-px h-5 bg-slate-800 my-auto" />
+        <div className="w-px h-5 bg-slate-800 my-auto hidden sm:block" />
 
         {/* Immersive Viewport Mode */}
         <button
@@ -109,7 +109,7 @@ export function ControlBar() {
             toggleImmersiveMode();
             spaceAudio.playClickSound();
           }}
-          className={`px-3 py-2 rounded-xl border font-mono text-xs flex items-center space-x-1.5 transition-all cursor-pointer ${
+          className={`px-2.5 sm:px-3 py-2 rounded-xl border font-mono text-xs flex items-center space-x-1.5 transition-all cursor-pointer ${
             isImmersiveMode
               ? 'bg-amber-950/90 border-amber-500/50 text-amber-300 font-bold'
               : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
