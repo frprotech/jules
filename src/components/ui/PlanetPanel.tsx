@@ -26,7 +26,7 @@ export function PlanetPanel() {
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 400, opacity: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="fixed top-20 right-6 bottom-24 z-30 w-80 md:w-96 p-6 rounded-3xl bg-slate-950/80 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
+        className="fixed top-16 sm:top-20 right-3 sm:right-6 bottom-20 sm:bottom-24 z-30 w-[calc(100vw-1.5rem)] max-w-sm md:w-96 p-5 sm:p-6 rounded-3xl bg-slate-950/85 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
       >
         {/* Close Button */}
         <button
@@ -34,36 +34,36 @@ export function PlanetPanel() {
             selectBody(null);
             spaceAudio.playClickSound();
           }}
-          className="absolute top-5 right-5 p-2 rounded-full bg-slate-900 border border-slate-700/60 text-slate-400 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer"
+          className="absolute top-4 right-4 p-2 rounded-full bg-slate-900 border border-slate-700/60 text-slate-400 hover:text-white hover:border-cyan-500/50 transition-all cursor-pointer z-10"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Header Badge & Name */}
-        <div className="mb-6">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono uppercase tracking-widest mb-3">
-            <Globe2 className="w-3.5 h-3.5" />
+        <div className="mb-5 pr-8">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-[10px] sm:text-xs font-mono uppercase tracking-widest mb-2.5">
+            <Globe2 className="w-3.5 h-3.5 text-cyan-400" />
             <span>{body.type.replace('_', ' ')}</span>
           </div>
-          <h2 className="text-3xl font-extrabold font-mono tracking-tight text-white mb-1">
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-white mb-1">
             {body.name}
           </h2>
           <p className="text-cyan-400 text-xs font-mono italic">{body.tagline}</p>
         </div>
 
         {/* Description */}
-        <p className="text-slate-300 text-xs leading-relaxed mb-6 font-sans">
+        <p className="text-slate-300 text-xs leading-relaxed mb-5 font-sans">
           {body.description}
         </p>
 
         {/* Key Telemetry Metrics Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-6 font-mono">
+        <div className="grid grid-cols-2 gap-2.5 mb-5 font-mono">
           <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
             <div className="flex items-center space-x-1.5 text-slate-400 text-[10px] uppercase mb-1">
               <Orbit className="w-3 h-3 text-cyan-400" />
               <span>Distance</span>
             </div>
-            <div className="text-sm font-bold text-white">{body.distanceFromSunAU} AU</div>
+            <div className="text-xs sm:text-sm font-bold text-white">{body.distanceFromSunAU} AU</div>
           </div>
 
           <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
@@ -71,7 +71,7 @@ export function PlanetPanel() {
               <Thermometer className="w-3 h-3 text-amber-400" />
               <span>Surface Temp</span>
             </div>
-            <div className="text-sm font-bold text-white">{tempDisplay}</div>
+            <div className="text-xs sm:text-sm font-bold text-white">{tempDisplay}</div>
           </div>
 
           <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
@@ -79,7 +79,7 @@ export function PlanetPanel() {
               <Clock className="w-3 h-3 text-indigo-400" />
               <span>Orbital Period</span>
             </div>
-            <div className="text-sm font-bold text-white">{body.orbitalPeriodDays} Days</div>
+            <div className="text-xs sm:text-sm font-bold text-white">{body.orbitalPeriodDays} Days</div>
           </div>
 
           <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
@@ -87,19 +87,19 @@ export function PlanetPanel() {
               <Globe2 className="w-3 h-3 text-emerald-400" />
               <span>Moons</span>
             </div>
-            <div className="text-sm font-bold text-white">{body.moonsCount}</div>
+            <div className="text-xs sm:text-sm font-bold text-white">{body.moonsCount}</div>
           </div>
         </div>
 
         {/* Moons List if available */}
         {body.moonsList.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3 flex items-center space-x-2">
+          <div className="mb-5">
+            <h3 className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-slate-400 mb-2.5 flex items-center space-x-2">
               <span>Major Satellites</span>
             </h3>
             <div className="space-y-2">
               {body.moonsList.map((m) => (
-                <div key={m.id} className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                <div key={m.id} className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
                   <div className="text-xs font-mono font-bold text-cyan-300">{m.name}</div>
                   {m.details && <div className="text-[11px] text-slate-400 mt-0.5">{m.details}</div>}
                 </div>
@@ -110,13 +110,13 @@ export function PlanetPanel() {
 
         {/* Fun Facts */}
         <div>
-          <h3 className="text-xs font-mono uppercase tracking-widest text-slate-400 mb-3 flex items-center space-x-1.5">
+          <h3 className="text-[10px] sm:text-xs font-mono uppercase tracking-widest text-slate-400 mb-2.5 flex items-center space-x-1.5">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             <span>Cosmic Archives</span>
           </h3>
           <ul className="space-y-2 text-xs text-slate-300">
             {body.funFacts.map((fact, idx) => (
-              <li key={idx} className="p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 leading-relaxed">
+              <li key={idx} className="p-2.5 sm:p-3 rounded-xl bg-slate-900/40 border border-slate-800/60 leading-relaxed">
                 • {fact}
               </li>
             ))}
