@@ -13,10 +13,10 @@ interface OrbitRingProps {
 export function OrbitRing({ radius, color = '#3a4e68', isSelected = false }: OrbitRingProps) {
   const particlesRef = useRef<THREE.Points>(null);
 
-  // Animate single particle travelling along the orbit path
+  // Animate photon particles travelling along the orbit path
   useFrame((_, delta) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y += delta * 0.2;
+      particlesRef.current.rotation.z += delta * 0.4;
     }
   });
 
