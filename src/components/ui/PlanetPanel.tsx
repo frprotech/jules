@@ -26,7 +26,7 @@ export function PlanetPanel() {
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 400, opacity: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="fixed top-20 right-6 bottom-24 z-30 w-80 md:w-96 p-6 rounded-3xl bg-slate-950/80 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
+        className="fixed top-20 right-3 sm:right-6 left-3 sm:left-auto bottom-24 z-30 w-auto sm:w-80 md:w-96 p-6 rounded-3xl bg-slate-950/80 border border-slate-800/90 backdrop-blur-xl shadow-2xl shadow-cyan-950/30 overflow-y-auto text-white select-none scrollbar-thin"
       >
         {/* Close Button */}
         <button

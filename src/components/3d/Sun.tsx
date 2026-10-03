@@ -14,6 +14,7 @@ export function Sun() {
   const coronaRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -54,6 +55,10 @@ export function Sun() {
         onClick={(e) => {
           e.stopPropagation();
           selectBody('sun');
+        }}
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          triggerCameraFocus('sun');
         }}
         onPointerOver={(e) => {
           e.stopPropagation();

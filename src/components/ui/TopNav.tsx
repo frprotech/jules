@@ -1,20 +1,44 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSolarStore } from '@/store/useSolarStore';
 import { NavTab, QualityPreset } from '@/types/solar';
+import { PLANETS_DATA, SUN_DATA } from '@/data/planets';
 import { spaceAudio } from '@/utils/audio';
-import { Search, Volume2, VolumeX, Maximize2, Sliders } from 'lucide-react';
+import { Search, Volume2, VolumeX, Maximize2, Sliders, Compass } from 'lucide-react';
 
 export function TopNav() {
   const activeTab = useSolarStore((s) => s.activeTab);
   const setActiveTab = useSolarStore((s) => s.setActiveTab);
   const setSearchOpen = useSolarStore((s) => s.setSearchOpen);
+  const isSearchOpen = useSolarStore((s) => s.isSearchOpen);
   const isAudioMuted = useSolarStore((s) => s.isAudioMuted);
   const toggleAudio = useSolarStore((s) => s.toggleAudio);
   const qualityPreset = useSolarStore((s) => s.qualityPreset);
   const setQualityPreset = useSolarStore((s) => s.setQualityPreset);
   const selectBody = useSolarStore((s) => s.selectBody);
+  const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const isImmersiveMode = useSolarStore((s) => s.isImmersiveMode);
+
+  // Global Keyboard Shortcuts (Cmd+K / Ctrl+K and Escape)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen(!isSearchOpen);
+        spaceAudio.playClickSound();
+      } else if (e.key === 'Escape') {
+        if (isSearchOpen) {
+          setSearchOpen(false);
+        } else if (selectedBodyId) {
+          selectBody(null);
+          spaceAudio.playClickSound();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isSearchOpen, selectedBodyId, setSearchOpen, selectBody]);
 
   if (isImmersiveMode) return null;
 
@@ -35,6 +59,7 @@ export function TopNav() {
   };
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-40 p-4 flex items-center justify-between pointer-events-none select-none">
       {/* Brand Logo */}
       <div
@@ -134,5 +159,50 @@ export function TopNav() {
         </button>
       </div>
     </header>
+
+    {/* Quick Planet Selector Sub-bar when 'Planets' tab is active */}
+    {activeTab === 'planets' && (
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 pointer-events-auto flex items-center space-x-1.5 p-2 rounded-2xl bg-slate-950/85 border border-slate-800/80 backdrop-blur-md shadow-2xl overflow-x-auto max-w-[90vw] scrollbar-none select-none">
+        <button
+          onClick={() => {
+            selectBody('sun');
+            spaceAudio.playSelectSound();
+          }}
+          className={`px-3 py-1.5 rounded-xl font-mono text-xs uppercase cursor-pointer whitespace-nowrap transition-all ${
+            selectedBodyId === 'sun'
+              ? 'bg-amber-950/90 text-amber-300 border border-amber-500/50 font-bold'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          {SUN_DATA.name}
+        </button>
+        <div className="w-px h-4 bg-slate-800 my-auto" />
+        {PLANETS_DATA.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => {
+              selectBody(p.id);
+              spaceAudio.playSelectSound();
+            }}
+            className={`px-3 py-1.5 rounded-xl font-mono text-xs uppercase cursor-pointer whitespace-nowrap transition-all ${
+              selectedBodyId === p.id
+                ? 'bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 font-bold'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            {p.name}
+          </button>
+        ))}
+      </div>
+    )}
+
+    {/* Explore Mode Banner */}
+    {activeTab === 'explore' && !selectedBodyId && (
+      <div className="fixed top-20 left-1/2 -translate-x-1/2 z-40 pointer-events-auto px-5 py-2.5 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 backdrop-blur-md text-cyan-300 font-mono text-xs shadow-xl flex items-center space-x-2.5 animate-pulse">
+        <Compass className="w-4 h-4 text-cyan-400" />
+        <span>Select or double-click any celestial body to initiate spatial fly-through.</span>
+      </div>
+    )}
+    </>
   );
 }

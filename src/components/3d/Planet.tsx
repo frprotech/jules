@@ -22,6 +22,7 @@ export function Planet({ data }: PlanetProps) {
   const cloudMeshRef = useRef<THREE.Mesh>(null);
 
   const selectBody = useSolarStore((s) => s.selectBody);
+  const triggerCameraFocus = useSolarStore((s) => s.triggerCameraFocus);
   const selectedBodyId = useSolarStore((s) => s.selectedBodyId);
   const hoveredBodyId = useSolarStore((s) => s.hoveredBodyId);
   const setHoveredBody = useSolarStore((s) => s.setHoveredBody);
@@ -71,6 +72,10 @@ export function Planet({ data }: PlanetProps) {
           onClick={(e) => {
             e.stopPropagation();
             selectBody(data.id);
+          }}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            triggerCameraFocus(data.id);
           }}
           onPointerOver={(e) => {
             e.stopPropagation();
@@ -128,8 +133,19 @@ export function Planet({ data }: PlanetProps) {
           </mesh>
         )}
 
-        {/* Saturn / Uranus Rings */}
-        {data.hasRings && <SaturnRings planetRadius={data.radius} />}
+        {/* Saturn / Uranus / Neptune Rings */}
+        {data.hasRings && (
+          <SaturnRings
+            planetRadius={data.radius}
+            innerColor={
+              data.id === 'uranus' ? '#8ee0f8' : data.id === 'neptune' ? '#5c87ff' : '#e0c083'
+            }
+            outerColor={
+              data.id === 'uranus' ? '#3b96c4' : data.id === 'neptune' ? '#1b3bb3' : '#9c8352'
+            }
+            ringScale={data.id === 'saturn' ? 2.8 : 2.2}
+          />
+        )}
 
         {/* Orbiting Moons */}
         {data.moonsList.map((moon) => (
@@ -143,6 +159,10 @@ export function Planet({ data }: PlanetProps) {
               onClick={(e) => {
                 e.stopPropagation();
                 selectBody(data.id);
+              }}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                triggerCameraFocus(data.id);
               }}
               className={`px-2.5 py-1 rounded-md backdrop-blur-md text-xs tracking-wider font-mono whitespace-nowrap cursor-pointer transition-all duration-200 ${
                 isSelected
