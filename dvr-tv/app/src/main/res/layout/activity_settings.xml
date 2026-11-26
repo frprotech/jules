@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="560dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="32dp"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DVR settings"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
+            android:text="Find the IP in the DVR menu: Main Menu, Network, TCP/IP. The TV must be on the same network as the DVR."
+            android:textColor="#9AA4AE"
+            android:textSize="14sp" />
+
+        <EditText android:id="@+id/host" style="@style/Field" android:hint="DVR IP address (e.g. 192.168.1.108)" android:inputType="text" android:digits="0123456789." />
+        <EditText android:id="@+id/port" style="@style/Field" android:hint="RTSP port (default 554)" android:inputType="number" />
+        <EditText android:id="@+id/user" style="@style/Field" android:hint="Username" android:inputType="text" />
+        <EditText android:id="@+id/pass" style="@style/Field" android:hint="Password" android:inputType="textPassword" />
+        <EditText android:id="@+id/channels" style="@style/Field" android:hint="Number of cameras" android:inputType="number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Cameras per screen"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/grid1" style="@style/Radio" android:text="1" />
+            <RadioButton android:id="@+id/grid4" style="@style/Radio" android:text="4" />
+            <RadioButton android:id="@+id/grid9" style="@style/Radio" android:text="9" />
+            <RadioButton android:id="@+id/grid16" style="@style/Radio" android:text="16" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/hd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="HD quality in full screen"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Save and watch" />
+    </LinearLayout>
+</ScrollView>
