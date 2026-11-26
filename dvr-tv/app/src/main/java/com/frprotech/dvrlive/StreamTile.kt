@@ -48,14 +48,25 @@ class StreamTile(context: Context, private val muted: Boolean) : FrameLayout(con
     private var player: ExoPlayer? = null
     private var url: String? = null
     private val retry = Runnable { start() }
+    private val watchdog = Runnable {
+        showStatus("No video after ${WATCHDOG_MS / 1000}s.\nCheck DVR IP and that this device is on the same WiFi.\nRetrying…")
+        player?.release()
+        player = null
+        playerView.player = null
+        postDelayed(retry, RETRY_MS)
+    }
 
     private val listener = object : Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
-            if (state == Player.STATE_READY) status.visibility = GONE
+            if (state == Player.STATE_READY) {
+                removeCallbacks(watchdog)
+                status.visibility = GONE
+            }
         }
 
         override fun onPlayerError(error: PlaybackException) {
-            showStatus("No signal, retrying…")
+            removeCallbacks(watchdog)
+            showStatus(describe(error) + "\nRetrying…")
             removeCallbacks(retry)
             postDelayed(retry, RETRY_MS)
         }
@@ -90,6 +101,7 @@ class StreamTile(context: Context, private val muted: Boolean) : FrameLayout(con
         val source = RtspMediaSource.Factory()
             .setForceUseRtpTcp(true)
             .setTimeoutMs(8000)
+            .setSocketFactory(DvrSocketFactory())
             .createMediaSource(MediaItem.fromUri(u))
         player = ExoPlayer.Builder(context).setLoadControl(loadControl).build().also {
             it.volume = if (muted) 0f else 1f
@@ -99,10 +111,12 @@ class StreamTile(context: Context, private val muted: Boolean) : FrameLayout(con
             it.prepare()
             playerView.player = it
         }
+        postDelayed(watchdog, WATCHDOG_MS)
     }
 
     fun release() {
         removeCallbacks(retry)
+        removeCallbacks(watchdog)
         playerView.player = null
         player?.run {
             removeListener(listener)
@@ -120,9 +134,25 @@ class StreamTile(context: Context, private val muted: Boolean) : FrameLayout(con
         status.visibility = VISIBLE
     }
 
+    private fun describe(error: PlaybackException): String {
+        val chain = generateSequence<Throwable>(error) { it.cause }.toList()
+        val text = chain.joinToString(" ") { it.message.orEmpty() }
+        return when {
+            chain.any { it is java.net.SocketTimeoutException || it is java.net.NoRouteToHostException } ->
+                "DVR not reachable. Check the IP and that this device is on the same WiFi."
+            chain.any { it is java.net.ConnectException } ->
+                "DVR refused the connection. Check the RTSP port (554)."
+            chain.any { it is java.net.UnknownHostException } -> "Invalid DVR address."
+            "401" in text || "Unauthorized" in text -> "Wrong username or password."
+            "404" in text || "Not Found" in text -> "Camera channel not found on DVR."
+            else -> "Stream error: " + (chain.lastOrNull()?.message ?: error.errorCodeName)
+        }
+    }
+
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     companion object {
         private const val RETRY_MS = 5000L
+        private const val WATCHDOG_MS = 15000L
     }
 }
